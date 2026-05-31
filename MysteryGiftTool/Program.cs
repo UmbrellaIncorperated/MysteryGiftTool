@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -188,8 +188,6 @@ namespace MysteryGiftTool
                 CreateDirectoryIfNull(dec_dir);
                 foreach (var file in new DirectoryInfo(archive_dir).GetFiles())
                 {
-                    if (!file.Name.Contains("-_-"))
-                        continue;
                     var boss = BossMetadata.FromArchiveName(file.Name);
                     var dec_path = Path.Combine(dec_dir, boss.FileName);
                     if (File.Exists(dec_path))
