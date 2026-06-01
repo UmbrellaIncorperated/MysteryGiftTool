@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace MysteryGiftTool
 {
@@ -40,6 +40,20 @@ namespace MysteryGiftTool
                 Type = spl[1],
                 ID = spl[2],
                 TimeStamp = spl[3]
+            };
+        }
+
+        public static BossMetadata FromFilename(string filename)
+        {
+            // Fallback parser for malformed archive names
+            // Uses just the filename without extension
+            var nameWithoutExt = System.IO.Path.GetFileNameWithoutExtension(filename);
+            return new BossMetadata
+            {
+                Name = nameWithoutExt,
+                Type = "unknown",
+                ID = "unknown",
+                TimeStamp = DateTime.Now.Ticks.ToString()
             };
         }
 
