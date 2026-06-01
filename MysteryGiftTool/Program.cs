@@ -206,7 +206,25 @@ namespace MysteryGiftTool
                 CreateDirectoryIfNull(dec_dir);
                 foreach (var file in new DirectoryInfo(archive_dir).GetFiles())
                 {
-                    var boss = BossMetadata.FromArchiveName(file.Name);
+                    BossMetadata boss = null;
+                    try
+                    {
+                        boss = BossMetadata.FromArchiveName(file.Name);
+                    }
+                    catch (Exception ex)
+                    {
+                        Log($"Warning: Could not parse metadata for {file.Name}: {ex.Message}");
+                        Log($"Attempting decryption anyway using filename...");
+                        // Create a fallback BossMetadata using the filename
+                        boss = BossMetadata.FromFilename(file.Name);
+                    }
+
+                    if (boss == null)
+                    {
+                        Log($"Skipping {file.Name} - could not create metadata");
+                        continue;
+                    }
+
                     var dec_path = Path.Combine(dec_dir, boss.FileName);
                     if (File.Exists(dec_path))
                         continue;
