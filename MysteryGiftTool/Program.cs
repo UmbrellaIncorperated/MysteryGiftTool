@@ -150,8 +150,32 @@ namespace MysteryGiftTool
                 Log($"Downloading new BOSS archives for {game.Name}...");
                 var archive_dir = Path.Combine(game_dir, "boss");
                 CreateDirectoryIfNull(archive_dir);
-                var new_boss = fl.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).Where(s => s.Contains("\t")).Select(BossMetadata.FromString).ToList();
-                var old_boss = old_fl.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).Where(s => s.Contains("\t")).Select(BossMetadata.FromString).ToList();
+                var new_boss = fl.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries)
+                    .Where(s => s.Contains("\t"))
+                    .Select(s =>
+                    {
+                        try { return BossMetadata.FromString(s); }
+                        catch (Exception ex)
+                        {
+                            Log($"Warning: Skipping malformed boss entry: {ex.Message}");
+                            return null;
+                        }
+                    })
+                    .Where(bm => bm != null)
+                    .ToList();
+                var old_boss = old_fl.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries)
+                    .Where(s => s.Contains("\t"))
+                    .Select(s =>
+                    {
+                        try { return BossMetadata.FromString(s); }
+                        catch (Exception ex)
+                        {
+                            Log($"Warning: Skipping malformed boss entry: {ex.Message}");
+                            return null;
+                        }
+                    })
+                    .Where(bm => bm != null)
+                    .ToList();
 
                 foreach (var boss in new_boss)
                 {
